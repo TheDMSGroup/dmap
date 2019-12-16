@@ -5,25 +5,20 @@ var __dmapValues = {"mappings":{"accepted":"accepted","acceptedpub":"accepted_pu
 * QUERY JSON DMAP (namespace: __dmapValues
 */
 function queryDmap(question, answer) {
-    console.log('DMAP QUERY');
     var mappedQuestionKey = getDmapMapping(question);
 
     if (!mappedQuestionKey) {
-        console.log('NO KEY/MAP FOUND');
         return [question, answer];
     }
 
     if (__dmapValues['privates'][mappedQuestionKey]) {
-        console.log('PRIVATE FIELD');
         return [mappedQuestionKey, '*********'];
     }
 
     if (mappedPattern = __dmapValues['patterns'][mappedQuestionKey]) {
-        console.log('DMAP PATTERN')
         return [mappedQuestionKey, applyDmapPattern(answer, __dmapValues['patterns'][mappedQuestionKey])];
     }
 
-    console.log('DMAP KEY SENT');
     return [mappedQuestionKey, answer];
 }
 
@@ -33,7 +28,6 @@ function modifyQueryInput(queryInput) {
 
 function getDmapMapping(keyString) {
     keyString = modifyQueryInput(keyString);
-    console.log(keyString);
 
     //check for mappings
     if (__dmapValues['mappings'].hasOwnProperty(keyString)) {
