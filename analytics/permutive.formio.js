@@ -163,9 +163,9 @@ var loadMainFeature = function() {
         if (typeof Formio !== 'undefined') {
             setInterval(function() {
                 var formData = Formio.forms[Object.keys(Formio.forms)[0]].data;
-                if (!oldFormioData) {
-                    oldFormioData = easyCopyObj(formData);
-                }
+                //if (!oldFormioData) {
+                //    oldFormioData = easyCopyObj(formData);
+                //}
                 if (JSON.stringify(oldFormioData) !== JSON.stringify(formData)) {
                     for (var k in formData) {
                         if (
