@@ -1,5 +1,5 @@
 var findFormioTimer = null;
-var watchFormioDataInterval = 5000;
+var watchFormioDataInterval = 2500;
 var oldFormioData = null;
 
 /**
