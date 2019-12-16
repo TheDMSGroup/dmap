@@ -1,5 +1,3 @@
-/* DMAP Permutive Helper Script */
-
 var findFormioTimer = null;
 var watchFormioDataInterval = 5000;
 var oldFormioData = null;
@@ -47,6 +45,7 @@ function grabUrlArg(namespace) {
 }
 
 function permutiveTrack(eventType, payLoad) {
+    console.log([eventType, payLoad]);
     return window.permutive.track(eventType, payLoad);
 }
 
@@ -168,9 +167,11 @@ var loadMainFeature = function() {
                     if (JSON.stringify(oldFormioData) !== JSON.stringify(formData)) {
                         for (var k in formData) {
                             if (
-                                (!oldFormioDataFields.hasOwnProperty(k) || oldFormioDataFields[k] != formData[k])  &&
+                                (!oldFormioData.hasOwnProperty(k) || oldFormioData[k] != formData[k])  &&
                                 (formData.hasOwnProperty(k) && formData[k].length > 1)
                             ) {
+                                console.log("Form Data Changed: " + k + "\nFrom " + oldFormioData[k] + " to " + formData[k]);
+
                                 var postQuestion = k;
                                 var postAnswer = formData[k];
 
