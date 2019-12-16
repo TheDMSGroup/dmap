@@ -1,6 +1,7 @@
 var findFormioTimer = null;
-var watchFormioDataInterval = 2500;
+var watchFormioDataInterval = 5000;
 var oldFormioData = null;
+var oldFormioDataFields = {};
 
 /**
  * Event Properties
@@ -44,7 +45,6 @@ function grabUrlArg(namespace) {
 }
 
 function permutiveTrack(eventType, payLoad) {
-    console.log([eventType, payLoad]);
     return window.permutive.track(eventType, payLoad);
 }
 
@@ -83,7 +83,7 @@ function forceString(answer) {
 function copyOldProperties(obj) {
     for (var k in obj) {
         if (obj[k] !== null) {
-            oldFormioData[k] = obj[k];
+            oldFormioDataFields[k] = obj[k];
         }
     }
 }
@@ -162,56 +162,58 @@ var loadMainFeature = function() {
         if (typeof Formio !== 'undefined') {
             setInterval(function() {
                 var formData = Formio.forms[Object.keys(Formio.forms)[0]].data;
-                if (!oldFormioData) {
-                    oldFormioData = easyCopyObj(formData);
-                }
-                if (JSON.stringify(oldFormioData) !== JSON.stringify(formData)) {
-                    for (var k in formData) {
-                        if (
-                            (!oldFormioData.hasOwnProperty(k) || oldFormioData[k] != formData[k])  &&
-                            (formData.hasOwnProperty(k) && formData[k].length > 1)
-                        ) {
-                            console.log("Form Data Changed: " + k + "\nFrom " + oldFormioData[k] + " to " + formData[k]);
+                if (oldFormioData) {
+                    if (JSON.stringify(oldFormioData) !== JSON.stringify(formData)) {
+                        for (var k in formData) {
+                            if (
+                                (!oldFormioDataFields.hasOwnProperty(k) || oldFormioDataFields[k] != formData[k])  &&
+                                (formData.hasOwnProperty(k) && formData[k].length > 1)
+                            ) {
+                                var postQuestion = k;
+                                var postAnswer = formData[k];
 
-                            var postQuestion = k;
-                            var postAnswer = formData[k];
+                                if (typeof window.queryDmap !== 'undefined') {
+                                    var dmapSet = queryDmap(postQuestion, postAnswer);
 
-                            if (typeof window.queryDmap !== 'undefined') {
-                                var dmapSet = queryDmap(postQuestion, postAnswer);
+                                    postQuestion = dmapSet[0];
+                                    postAnswer = dmapSet[1];
+                                }
 
-                                postQuestion = dmapSet[0];
-                                postAnswer = dmapSet[1];
+                                console.log("Form Data Changed: " + k + "\nFrom " + oldFormioDataFields[k] + " to " + formData[k] + "\nSending: " + postAnswer);
+                                
+                                permutiveTrack(
+                                    "Submit",
+                                    mergeObjects(
+                                        permutiveEventProperties.Submit,
+                                        {
+                                            "client": {
+                                                "url": document.location.href,
+                                                "domain": document.location.hostname,
+                                                "referrer": document.referrer,
+                                                "title": document.title,
+                                                "type": "web",
+                                                "user_agent": navigator.userAgent,
+                                            },
+                                            "form": {
+                                                "answer": postAnswer,
+                                                "question": postQuestion,
+                                            },
+                                            "network": {
+                                                "campaignId": grabUrlArg('utm_campaign'),
+                                                "pubId": grabUrlArg('sub2'),
+                                                "source": grabUrlArg('utm_source'),
+                                                "subId": grabUrlArg('sub1')
+                                            },
+                                        }
+                                    )
+                                );
                             }
-
-                            permutiveTrack(
-                                "Submit",
-                                mergeObjects(
-                                    permutiveEventProperties.Submit,
-                                    {
-                                        "client": {
-                                            "url": document.location.href,
-                                            "domain": document.location.hostname,
-                                            "referrer": document.referrer,
-                                            "title": document.title,
-                                            "type": "web",
-                                            "user_agent": navigator.userAgent,
-                                        },
-                                        "form": {
-                                            "answer": forceString(postAnswer),
-                                            "question": postQuestion,
-                                        },
-                                        "network": {
-                                            "campaignId": grabUrlArg('utm_campaign'),
-                                            "pubId": grabUrlArg('sub2'),
-                                            "source": grabUrlArg('utm_source'),
-                                            "subId": grabUrlArg('sub1')
-                                        },
-                                    }
-                                )
-                            );
                         }
-                    }
 
+                        oldFormioData = easyCopyObj(formData);
+                        copyOldProperties(formData);
+                    }
+                } else {
                     oldFormioData = easyCopyObj(formData);
                 }
             }, watchFormioDataInterval);
