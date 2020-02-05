@@ -6,6 +6,9 @@
  * @returns string
  */
 function forceString(answer) {
+    if (typeof answer == "undefined") {
+        return "";
+    }
     if (typeof answer == "string") {
         return answer;
     }
