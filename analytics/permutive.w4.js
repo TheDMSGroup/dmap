@@ -45,9 +45,14 @@ function grabUrlArg(namespace) {
 $(function (){
     $(document).ready(function() {
         $(':input').change(function(event) {
- 
+
             var postQuestion = $(this).attr('name');
             var postAnswer   = $(this).val();
+
+            if (typeof postQuestion === 'string' && postQuestion !== '' && postQuestion.slice(0,5) === 'data[') {
+                // Note: Fix for simplyjobs.com, all of the input names are formatted like so: data[FIELD]
+                postQuestion = postQuestion.substring(5).replace(']','');
+            }
 
             if (typeof window.queryDmap !== 'undefined') {
                 var dmapSet = queryDmap(postQuestion, postAnswer);
