@@ -43,14 +43,13 @@ function grabUrlArg(namespace) {
 
 /* BIND TO :input Change Events */
 $(function (){
-    $(document).ready(function() {
-        $(':input').change(function(event) {
+        $(document).on( 'change', ':input', function() {
 
             var postQuestion = $(this).attr('name');
             var postAnswer   = $(this).val();
 
             if (typeof postQuestion === 'string' && postQuestion !== '' && postQuestion.slice(0,5) === 'data[') {
-                // Note: Fix for simplyjobs.com, all of the input names are formatted like so: data[FIELD]
+                // Note: Fix for simplyjobs.com, all of the input names are formatted like so data[FIELD]
                 postQuestion = postQuestion.substring(5).replace(']','');
             }
 
@@ -82,6 +81,5 @@ $(function (){
                 }
             });
         });
-    });
 });
 
