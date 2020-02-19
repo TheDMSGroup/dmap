@@ -43,43 +43,43 @@ function grabUrlArg(namespace) {
 
 /* BIND TO :input Change Events */
 $(function (){
-        $(document).on( 'change', ':input', function() {
+    $(document).on( 'change', ':input', function() {
 
-            var postQuestion = $(this).attr('name');
-            var postAnswer   = $(this).val();
+        var postQuestion = $(this).attr('name');
+        var postAnswer   = $(this).val();
 
-            if (typeof postQuestion === 'string' && postQuestion !== '' && postQuestion.slice(0,5) === 'data[') {
-                // Note: Fix for simplyjobs.com, all of the input names are formatted like so data[FIELD]
-                postQuestion = postQuestion.substring(5).replace(']','');
+        if (typeof postQuestion === 'string' && postQuestion !== '' && postQuestion.slice(0,5) === 'data[') {
+            // Note: Fix for simplyjobs.com, all of the input names are formatted like so data[FIELD]
+            postQuestion = postQuestion.substring(5).replace(']','');
+        }
+
+        if (typeof window.queryDmap !== 'undefined') {
+            var dmapSet = queryDmap(postQuestion, postAnswer);
+
+            postQuestion = dmapSet[0];
+            postAnswer = dmapSet[1];
+        }
+
+       window.permutive.track('Submit', {
+            "client": {
+                "url": document.location.href,
+                "domain": document.location.hostname,
+                "referrer": document.referrer,
+                "title": document.title,
+                "type": "web",
+                "user_agent": navigator.userAgent,
+            },
+            "form": {
+                "answer": forceString(postAnswer),
+                "question": postQuestion,
+            },
+            "network": {
+                "campaignId": grabUrlArg('utm_campaign'),
+                "pubId": grabUrlArg('sub2'),
+                "source": grabUrlArg('utm_source'),
+                "subId": grabUrlArg('sub1')
             }
-
-            if (typeof window.queryDmap !== 'undefined') {
-                var dmapSet = queryDmap(postQuestion, postAnswer);
-
-                postQuestion = dmapSet[0];
-                postAnswer = dmapSet[1];
-            }
-
-           window.permutive.track('Submit', {
-                "client": {
-                    "url": document.location.href,
-                    "domain": document.location.hostname,
-                    "referrer": document.referrer,
-                    "title": document.title,
-                    "type": "web",
-                    "user_agent": navigator.userAgent,
-                },
-                "form": {
-                    "answer": forceString(postAnswer),
-                    "question": postQuestion,
-                },
-                "network": {
-                    "campaignId": grabUrlArg('utm_campaign'),
-                    "pubId": grabUrlArg('sub2'),
-                    "source": grabUrlArg('utm_source'),
-                    "subId": grabUrlArg('sub1')
-                }
-            });
         });
+    });
 });
 
