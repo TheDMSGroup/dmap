@@ -7,6 +7,10 @@ Helper files for permutive tracking.
 - dmap/dmap-autowar.js : This is specific to DMS Insurance auto warranty mappings.
 - dmap/dmap-health.js : This is specific to DMS Insurance health mappings.
 - dmap/dmap-home.js : This is specific to DMS Insurance home mappings.
+- dmap/dmap-loanadvisor.js : This is specific to loanadvisor.
+
+## Analytics
+- permutive.loanadvisor.js : Specific to loanadvisor.
 
 ## Deploying
 - Site is hosted by github pages and backed by Cloudflare. Merge into master and it kicks off CDN cache invalidation.
