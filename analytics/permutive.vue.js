@@ -10,7 +10,7 @@
          return answer;
      }
 
-     if (typeof answer.toString == "function") {
+     if (answer && typeof answer.toString == "function") {
          return answer.toString();
      }
 
