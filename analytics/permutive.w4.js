@@ -60,26 +60,27 @@ $(function (){
             postAnswer = dmapSet[1];
         }
 
-       window.permutive.track('Submit', {
-            "client": {
-                "url": document.location.href,
-                "domain": document.location.hostname,
-                "referrer": document.referrer,
-                "title": document.title,
-                "type": "web",
-                "user_agent": navigator.userAgent,
-            },
-            "form": {
-                "answer": forceString(postAnswer),
-                "question": postQuestion,
-            },
-            "network": {
-                "campaignId": grabUrlArg('utm_campaign'),
-                "pubId": grabUrlArg('sub2'),
-                "source": grabUrlArg('utm_source'),
-                "subId": grabUrlArg('sub1')
-            }
-        });
+      if (typeof window.permutive !== 'undefined') {
+        window.permutive.track('Submit', {
+             "client": {
+                 "url": document.location.href,
+                 "domain": document.location.hostname,
+                 "referrer": document.referrer,
+                 "title": document.title,
+                 "type": "web",
+                 "user_agent": navigator.userAgent,
+             },
+             "form": {
+                 "answer": forceString(postAnswer),
+                 "question": postQuestion,
+             },
+             "network": {
+                 "campaignId": grabUrlArg('utm_campaign'),
+                 "pubId": grabUrlArg('sub2'),
+                 "source": grabUrlArg('utm_source'),
+                 "subId": grabUrlArg('sub1')
+             }
+         });  
+      }
     });
 });
-

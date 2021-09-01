@@ -45,7 +45,10 @@ function grabUrlArg(namespace) {
 }
 
 function permutiveTrack(eventType, payLoad) {
-    return window.permutive.track(eventType, payLoad);
+    if (typeof window.permutive !== 'undefined') {
+      return window.permutive.track(eventType, payLoad);
+    }
+    return;
 }
 
 function mergeObjects(obj1, obj2) {
@@ -112,7 +115,7 @@ var loadMainFeature = function() {
                                 }
 
                                 console.log("Form Data Changed: " + k + "\nFrom " + oldFormioDataFields[k] + " to " + formData[k] + "\nSending: " + postAnswer);
-                                
+
                                 permutiveTrack(
                                     "Submit",
                                     mergeObjects(
@@ -161,4 +164,3 @@ if (typeof $ == 'undefined') {
 } else {
     $(loadMainFeature);
 }
-
